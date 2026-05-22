@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Compare Products - SmartShop{% endblock %}
+
+{% block content %}
+<section class="compare-section">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-exchange-alt"></i> Product Comparison</h1>
+            <p class="page-subtitle">Compare products side-by-side to find the best one</p>
+        </div>
+
+        {% if products %}
+        <!-- AI Summary Box -->
+        <div class="cmp-ai-summary" id="cmpAiSummary">
+            <div class="cmp-ai-header">
+                <i class="fas fa-robot"></i> <strong>AI Comparison Summary</strong>
+                <span class="cmp-ai-badge">SMART ANALYSIS</span>
+            </div>
+            <div class="cmp-ai-body" id="cmpAiBody">
+                <div class="cmp-ai-loading"><i class="fas fa-spinner fa-spin"></i> Analyzing products...</div>
+            </div>
+        </div>
+
+        <!-- Best Overall Badge -->
+        {% for p in products %}
+        {% if p.pk == best.overall %}
+        <div class="cmp-best-overall">
+            <i class="fas fa-trophy"></i>
+            <span><strong>Best Overall Choice:</strong> {{ p.name }} — Best balance of price, rating &amp; availability</span>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+        <!-- Toolbar -->
+        <div class="cmp-toolbar">
+            <div class="cmp-toolbar-left">
+                <label class="cmp-toggle">
+                    <input type="checkbox" id="cmpDiffToggle">
+                    <span class="cmp-toggle-slider"></span>
+                    <span class="cmp-toggle-label">Only Differences</span>
+                </label>
+            </div>
+            <div class="cmp-toolbar-right">
+                <button class="cmp-tool-btn" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+                <button class="cmp-tool-btn" onclick="shareComparison()"><i class="fas fa-share-alt"></i> Share</button>
+                <button class="cmp-tool-btn cmp-clear-btn" onclick="clearCompareAll()"><i class="fas fa-trash-alt"></i> Clear All</button>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="cmp-table-wrap">
+            <table class="cmp-table" id="cmpTable">
+                <!-- Product Images (sticky header) -->
+                <thead class="cmp-sticky-head">
+                    <tr>
+                        <th class="cmp-label-cell">Product</th>
+                        {% for p in products %}
+                        <th class="cmp-product-cell {% if p.pk == best.overall %}cmp-best{% endif %}">
+                            {% if p.pk == best.overall %}<div class="cmp-best-tag"><i class="fas fa-crown"></i> BEST</div>{% endif %}
+                            <button class="cmp-remove-btn" onclick="removeFromCompare({{ p.pk }})" title="Remove"><i class="fas fa-times"></i></button>
+                            <div class="cmp-product-img">
+                                {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.name }}">
+                                {% else %}<div class="cmp-no-img"><i class="fas fa-image"></i></div>{% endif %}
+                            </div>
+                            <h3 class="cmp-product-name">{{ p.name }}</h3>
+                            <a href="{% url 'product_detail' p.pk %}" class="cmp-view-link">View Details <i class="fas fa-arrow-right"></i></a>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Price -->
+                    <tr class="cmp-row" data-field="price">
+                        <td class="cmp-label-cell"><i class="fas fa-tag"></i> Price</td>
+                        {% for p in products %}
+                        <td class="{% if p.pk == best.lowest_price %}cmp-highlight-green{% endif %}">
+                            <span class="cmp-price">₹{{ p.price }}</span>
+                            {% if p.pk == best.lowest_price %}<span class="cmp-best-badge">Lowest</span>{% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Rating -->
+                    <tr class="cmp-row" data-field="rating">
+                        <td class="cmp-label-cell"><i class="fas fa-star"></i> Rating</td>
+                        {% for p in products %}
+                        <td class="{% if p.pk == best.highest_rating and p.avg_rating > 0 %}cmp-highlight-green{% endif %}">
+                            <div class="cmp-rating-stars">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= p.avg_rating %}<i class="fas fa-star star-filled"></i>
+                                    {% else %}<i class="far fa-star star-empty"></i>{% endif %}
+                                {% endfor %}
+                                <span>{{ p.avg_rating }}/5 ({{ p.review_count }})</span>
+                            </div>
+                            {% if p.pk == best.highest_rating and p.avg_rating > 0 %}<span class="cmp-best-badge">Highest</span>{% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Brand -->
+                    <tr class="cmp-row" data-field="brand">
+                        <td class="cmp-label-cell"><i class="fas fa-building"></i> Brand</td>
+                        {% for p in products %}
+                        <td>{{ p.brand|default:"—" }}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Category -->
+                    <tr class="cmp-row" data-field="category">
+                        <td class="cmp-label-cell"><i class="fas fa-folder"></i> Category</td>
+                        {% for p in products %}
+                        <td><span class="cmp-cat-badge">{{ p.get_category_display }}</span></td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Stock -->
+                    <tr class="cmp-row" data-field="stock">
+                        <td class="cmp-label-cell"><i class="fas fa-cubes"></i> Stock</td>
+                        {% for p in products %}
+                        <td class="{% if p.stock <= 0 %}cmp-highlight-red{% elif p.pk == best.best_stock %}cmp-highlight-green{% endif %}">
+                            {% if p.stock > 0 %}
+                            <span class="cmp-stock-in"><i class="fas fa-check-circle"></i> {{ p.stock }} available</span>
+                            {% else %}
+                            <span class="cmp-stock-out"><i class="fas fa-times-circle"></i> Out of Stock</span>
+                            {% endif %}
+                            {% if p.pk == best.best_stock and p.stock > 0 %}<span class="cmp-best-badge">Best</span>{% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Description -->
+                    <tr class="cmp-row" data-field="description">
+                        <td class="cmp-label-cell"><i class="fas fa-align-left"></i> Description</td>
+                        {% for p in products %}
+                        <td class="cmp-desc-cell">{{ p.description|truncatewords:30 }}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Specifications -->
+                    <tr class="cmp-row" data-field="specs">
+                        <td class="cmp-label-cell"><i class="fas fa-cogs"></i> Specifications</td>
+                        {% for p in products %}
+                        <td class="cmp-spec-cell">
+                            {% if p.specifications %}
+                                {% for spec in p.specifications.splitlines %}
+                                    {% if spec.strip %}<div class="cmp-spec-line">• {{ spec }}</div>{% endif %}
+                                {% endfor %}
+                            {% else %}—{% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Warranty -->
+                    <tr class="cmp-row" data-field="warranty">
+                        <td class="cmp-label-cell"><i class="fas fa-shield-alt"></i> Warranty</td>
+                        {% for p in products %}
+                        <td>{{ p.warranty|default:"—" }}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Return Policy -->
+                    <tr class="cmp-row" data-field="return">
+                        <td class="cmp-label-cell"><i class="fas fa-undo"></i> Return Policy</td>
+                        {% for p in products %}
+                        <td>{{ p.return_policy|default:"—" }}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Delivery Time -->
+                    <tr class="cmp-row" data-field="delivery">
+                        <td class="cmp-label-cell"><i class="fas fa-shipping-fast"></i> Delivery</td>
+                        {% for p in products %}
+                        <td>{{ p.delivery_time|default:"—" }}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Actions Row -->
+                    <tr class="cmp-row cmp-actions-row">
+                        <td class="cmp-label-cell"></td>
+                        {% for p in products %}
+                        <td>
+                            {% if p.stock > 0 %}
+                            <a href="{% url 'add_to_cart' p.pk %}" class="btn btn-primary btn-sm add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</a>
+                            {% else %}
+                            <button class="btn btn-disabled btn-sm" disabled>Out of Stock</button>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="cmp-empty">
+            <i class="fas fa-exchange-alt cmp-empty-icon"></i>
+            <h3>No Products to Compare</h3>
+            <p>Add products to compare by clicking the <i class="fas fa-exchange-alt"></i> compare button on product cards.</p>
+            <a href="{% url 'home' %}#products" class="btn btn-primary"><i class="fas fa-store"></i> Browse Products</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    // Fetch AI Summary
+    var products = document.querySelectorAll('.cmp-product-cell');
+    if (products.length >= 2) {
+        var ids = [];
+        var compareList = JSON.parse(localStorage.getItem('smartshop_compare') || '[]');
+        compareList.forEach(function(item) { ids.push(item.id); });
+
+        if (ids.length >= 2) {
+            fetch('/api/compare-summary/?ids=' + ids.join(','))
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var body = document.getElementById('cmpAiBody');
+                    if (body && data.summary) {
+                        var html = data.summary
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/\n/g, '<br>');
+                        body.innerHTML = '<div class="cmp-ai-text">' + html + '</div>';
+                    }
+                })
+                .catch(function() {
+                    var body = document.getElementById('cmpAiBody');
+                    if (body) body.innerHTML = '<div class="cmp-ai-text">Unable to generate summary.</div>';
+                });
+        }
+    }
+
+    // Only Differences Toggle
+    var diffToggle = document.getElementById('cmpDiffToggle');
+    if (diffToggle) {
+        diffToggle.addEventListener('change', function() {
+            var rows = document.querySelectorAll('.cmp-row');
+            rows.forEach(function(row) {
+                if (row.classList.contains('cmp-actions-row')) return;
+                var cells = row.querySelectorAll('td:not(.cmp-label-cell)');
+                var values = [];
+                cells.forEach(function(c) { values.push(c.textContent.trim()); });
+                var allSame = values.every(function(v) { return v === values[0]; });
+                if (diffToggle.checked && allSame) {
+                    row.style.display = 'none';
+                } else {
+                    row.style.display = '';
+                }
+            });
+        });
+    }
+})();
+
+function shareComparison() {
+    var url = window.location.href;
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(function() {
+            showCompareToast('Comparison link copied to clipboard!');
+        });
+    } else {
+        prompt('Copy this link:', url);
+    }
+}
+
+function clearCompareAll() {
+    localStorage.removeItem('smartshop_compare');
+    updateCompareUI();
+    window.location.href = '/compare/';
+}
+
+function removeFromCompare(id) {
+    var list = JSON.parse(localStorage.getItem('smartshop_compare') || '[]');
+    list = list.filter(function(item) { return item.id !== id; });
+    localStorage.setItem('smartshop_compare', JSON.stringify(list));
+    updateCompareUI();
+    // Rebuild URL and reload
+    var ids = list.map(function(item) { return item.id; });
+    if (ids.length > 0) {
+        window.location.href = '/compare/?ids=' + ids.join(',');
+    } else {
+        window.location.href = '/compare/';
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Order Confirmed - SmartShop{% endblock %}
+{% block content %}
+<section class="success-section">
+    <div class="container">
+        <div class="success-card">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h1>Order Placed Successfully! 🎉</h1>
+            <p class="success-subtitle">Thank you for your purchase!</p>
+            <div class="success-details">
+                <div class="sd-row"><span>Order ID</span><strong>#{{ order.id }}</strong></div>
+                <div class="sd-row"><span>Total Amount</span><strong>₹{{ order.total_amount }}</strong></div>
+                <div class="sd-row"><span>Payment Method</span><strong>{{ order.get_payment_method_display }}</strong></div>
+                <div class="sd-row"><span>Payment Status</span><strong class="status-badge status-{{ order.payment_status|lower }}">{{ order.payment_status }}</strong></div>
+                {% if order.transaction_id %}<div class="sd-row"><span>Transaction ID</span><strong>{{ order.transaction_id }}</strong></div>{% endif %}
+                <div class="sd-row"><span>Status</span><strong class="status-badge status-pending">{{ order.status }}</strong></div>
+            </div>
+            <div class="success-actions">
+                <a href="{% url 'order_tracking' order.id %}" class="btn btn-primary"><i class="fas fa-truck"></i> Track Order</a>
+                <a href="{% url 'my_orders' %}" class="btn btn-outline"><i class="fas fa-box"></i> My Orders</a>
+                <a href="{% url 'home' %}" class="btn btn-outline"><i class="fas fa-shopping-bag"></i> Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,94 @@
+@{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shopping Cart - SmartShop{% endblock %}
+
+{% block content %}
+<section class="cart-section">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Shopping Cart</h1>
+            <p class="page-subtitle">Review your items before checkout</p>
+        </div>
+
+        {% if cart_items %}
+        <div class="cart-layout">
+            <div class="cart-items">
+                {% for item in cart_items %}
+                <div class="cart-item-card" id="cart-item-{{ item.id }}">
+                    <div class="cart-item-image">
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                        {% else %}
+                        <div class="product-placeholder small">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="cart-item-details">
+                        <h3 class="cart-item-name">
+                            <a href="{% url 'product_detail' item.product.pk %}">{{ item.product.name }}</a>
+                        </h3>
+                        <div class="cart-item-price">₹{{ item.product.price }}</div>
+                    </div>
+                    <div class="cart-item-quantity">
+                        <a href="{% url 'update_cart' item.pk 'decrease' %}" class="qty-btn" id="decrease-{{ item.id }}"
+                            title="Decrease quantity">
+                            <i class="fas fa-minus"></i>
+                        </a>
+                        <span class="qty-value">{{ item.quantity }}</span>
+                        <a href="{% url 'update_cart' item.pk 'increase' %}" class="qty-btn" id="increase-{{ item.id }}"
+                            title="Increase quantity">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    </div>
+                    <div class="cart-item-subtotal">
+                        <span class="subtotal-label">Subtotal</span>
+                        <span class="subtotal-value">₹{{ item.subtotal }}</span>
+                    </div>
+                    <a href="{% url 'remove_from_cart' item.pk %}" class="cart-item-remove remove-item-btn"
+                        id="remove-{{ item.id }}" title="Remove item">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-summary">
+                <div class="cart-summary-card">
+                    <h3 class="summary-title">Order Summary</h3>
+                    <div class="summary-row">
+                        <span>Items ({{ cart_items|length }})</span>
+                        <span>₹{{ total }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span class="free-shipping">FREE</span>
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span>₹{{ total }}</span>
+                    </div>
+                    <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg btn-block" id="proceed-checkout">
+                        <i class="fas fa-lock"></i> Proceed to Checkout
+                    </a>
+                    <a href="{% url 'home' %}#products" class="btn btn-outline btn-block" id="continue-shopping">
+                        <i class="fas fa-arrow-left"></i> Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-shopping-cart empty-state-icon"></i>
+            <h3>Your cart is empty</h3>
+            <p>Looks like you haven't added any products yet. Start shopping now!</p>
+            <a href="{% url 'home' %}#products" class="btn btn-primary" id="start-shopping">
+                <i class="fas fa-store"></i> Start Shopping
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

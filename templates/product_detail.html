@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ product.name }} - SmartShop{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb above showcase -->
+<div class="container" style="padding-top:80px;">
+    <div class="breadcrumb pd-breadcrumb">
+        <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+        <i class="fas fa-chevron-right"></i>
+        <a href="{% url 'home' %}#products">Products</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>{{ product.name }}</span>
+    </div>
+</div>
+
+<!-- === CINEMATIC PRODUCT SHOWCASE === -->
+<section class="pd-showcase" id="pdShowcase">
+    <div class="container">
+
+        <!-- Gradient Background Shape -->
+        <div class="pd-bg-shape">
+            <span class="pd-brand-watermark">SMARTSHOP</span>
+        </div>
+
+        <!-- Floating Product Image -->
+        <div class="pd-floating-img">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="zoomable-img" id="pdMainImage">
+            {% else %}
+            <div class="pd-img-placeholder"><i class="fas fa-image"></i></div>
+            {% endif %}
+        </div>
+
+        <!-- Content Card -->
+        <div class="pd-content-card">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="" class="pd-cover" aria-hidden="true">
+            {% endif %}
+
+            <div class="pd-content-inner pd-stagger" id="pdStagger">
+
+                <!-- 1. Category -->
+                <div class="pd-category">
+                    <i class="fas fa-tag"></i> {{ product.get_category_display }}
+                </div>
+
+                <!-- 2. Title -->
+                <h1 class="pd-title">{{ product.name }}</h1>
+
+                <!-- 3. Rating -->
+                <div class="pd-rating">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= product.avg_rating %}
+                            <i class="fas fa-star star-filled"></i>
+                        {% else %}
+                            <i class="far fa-star star-empty"></i>
+                        {% endif %}
+                    {% endfor %}
+                    <span class="pd-rating-text">{{ product.avg_rating }} / 5 ({{ product.review_count }} reviews)</span>
+                </div>
+
+                <!-- 4. Price -->
+                <span class="pd-price">₹{{ product.price }}</span>
+
+                <!-- 5. Info Labels -->
+                <div class="pd-info-row">
+                    <div class="pd-labels">
+                        <div class="pd-labels-title">AVAILABILITY</div>
+                        <div class="pd-labels-group">
+                            {% if product.stock > 0 %}
+                            <span class="pd-label-pill stock-in active"><i class="fas fa-check-circle"></i> In Stock ({{ product.stock }})</span>
+                            {% else %}
+                            <span class="pd-label-pill stock-out active"><i class="fas fa-times-circle"></i> Out of Stock</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="pd-labels-title">CATEGORY</div>
+                        <div class="pd-labels-group">
+                            <span class="pd-label-pill active">{{ product.get_category_display }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Description -->
+                <div class="pd-description">
+                    <h3>DESCRIPTION</h3>
+                    <p>{{ product.description }}</p>
+                </div>
+
+                <!-- 7. Meta -->
+                <div class="pd-meta">
+                    <span class="pd-meta-item"><i class="fas fa-shipping-fast"></i> FREE SHIPPING ABOVE ₹499</span>
+                    <span class="pd-meta-item"><i class="fas fa-undo"></i> 7-DAY RETURNS</span>
+                    <span class="pd-meta-item"><i class="fas fa-shield-alt"></i> GENUINE PRODUCT</span>
+                </div>
+
+                <!-- 8. Actions -->
+                <div class="pd-actions">
+                    {% if product.stock > 0 %}
+                    <a href="{% url 'add_to_cart' product.pk %}" class="pd-btn-cart add-to-cart-btn" id="pdAddToCart">
+                        <i class="fas fa-cart-plus"></i> ADD TO CART
+                    </a>
+                    <a href="{% url 'add_to_cart' product.pk %}?next={% url 'checkout' %}" class="pd-btn-buy" id="pdBuyNow">
+                        <i class="fas fa-bolt"></i> BUY NOW
+                    </a>
+                    {% else %}
+                    <button class="pd-btn-cart" disabled style="opacity:0.5;cursor:not-allowed;">
+                        <i class="fas fa-ban"></i> OUT OF STOCK
+                    </button>
+                    {% endif %}
+                    <button class="pd-btn-wishlist" id="pdWishlist">
+                        <i class="fas fa-heart pd-heart"></i> ADD TO WISHLIST
+                    </button>
+                    <button class="pd-btn-back" onclick="addToCompare({{ product.pk }}, '{{ product.name|escapejs }}', '{% if product.image %}{{ product.image.url }}{% endif %}', '{{ product.price }}')">
+                        <i class="fas fa-exchange-alt"></i> COMPARE
+                    </button>
+                    <a href="{% url 'home' %}#products" class="pd-btn-back">
+                        <i class="fas fa-arrow-left"></i> BACK
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Reviews Section -->
+<section class="reviews-section">
+    <div class="container">
+        <div class="section-header"><h2 class="section-title">⭐ Customer Reviews</h2></div>
+
+        {% if user.is_authenticated and not user_review %}
+        <div class="review-form-card">
+            <h3><i class="fas fa-pen"></i> Write a Review</h3>
+            <form method="POST" action="{% url 'submit_review' product.pk %}" id="reviewForm">
+                {% csrf_token %}
+                <div class="star-rating-input">
+                    <span class="star-label">Your Rating:</span>
+                    <div class="stars-interactive" id="starsInteractive">
+                        {% for i in "54321" %}<input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" {% if i == "5" %}checked{% endif %}><label for="star{{ i }}"><i class="fas fa-star"></i></label>{% endfor %}
+                    </div>
+                </div>
+                <div class="form-group">{{ review_form.comment }}</div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Review</button>
+            </form>
+        </div>
+        {% elif user.is_authenticated and user_review %}
+        <div class="review-form-card">
+            <p class="review-submitted"><i class="fas fa-check-circle"></i> You've already reviewed this product ({{ user_review.rating }}⭐)</p>
+        </div>
+        {% else %}
+        <div class="review-form-card">
+            <p><a href="{% url 'login' %}?next={{ request.path }}" class="auth-link"><i class="fas fa-sign-in-alt"></i> Log in to write a review</a></p>
+        </div>
+        {% endif %}
+
+        {% if reviews %}
+        <div class="reviews-list">
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="review-user"><i class="fas fa-user-circle"></i> {{ review.user.username }}</div>
+                    <div class="review-date">{{ review.created_at|date:"d M Y" }}</div>
+                </div>
+                <div class="review-stars">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= review.rating %}<i class="fas fa-star star-filled"></i>
+                        {% else %}<i class="far fa-star star-empty"></i>{% endif %}
+                    {% endfor %}
+                </div>
+                <p class="review-comment">{{ review.comment }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state" style="padding:40px"><p>No reviews yet. Be the first to review!</p></div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Similar Products -->
+{% if similar_products %}
+<section class="slider-section">
+    <div class="container">
+        <div class="section-header"><h2 class="section-title">🔗 Similar Products</h2></div>
+        <div class="product-slider">
+            {% for p in similar_products %}
+            <div class="slider-card">
+                <a href="{% url 'product_detail' p.pk %}">
+                    {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy">
+                    {% else %}<div class="product-placeholder small"><i class="fas fa-image"></i></div>{% endif %}
+                </a>
+                <div class="slider-card-info"><h4>{{ p.name|truncatewords:4 }}</h4><span class="slider-price">₹{{ p.price }}</span></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if also_viewed %}
+<section class="slider-section">
+    <div class="container">
+        <div class="section-header"><h2 class="section-title">👥 Customers Also Viewed</h2></div>
+        <div class="product-slider">
+            {% for p in also_viewed %}
+            <div class="slider-card">
+                <a href="{% url 'product_detail' p.pk %}">
+                    {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy">
+                    {% else %}<div class="product-placeholder small"><i class="fas fa-image"></i></div>{% endif %}
+                </a>
+                <div class="slider-card-info"><h4>{{ p.name|truncatewords:4 }}</h4><span class="slider-price">₹{{ p.price }}</span></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    // === Stagger Reveal ===
+    var stagger = document.getElementById('pdStagger');
+    if (stagger) {
+        setTimeout(function() { stagger.classList.add('revealed'); }, 100);
+    }
+
+    // === Wishlist Toggle ===
+    var wishBtn = document.getElementById('pdWishlist');
+    if (wishBtn) {
+        wishBtn.addEventListener('click', function() {
+            this.classList.toggle('is-active');
+            var heart = this.querySelector('.pd-heart');
+            if (this.classList.contains('is-active')) {
+                this.innerHTML = '<i class="fas fa-heart pd-heart" style="color:#e84393"></i> WISHLISTED ❤️';
+            } else {
+                this.innerHTML = '<i class="fas fa-heart pd-heart"></i> ADD TO WISHLIST';
+            }
+        });
+    }
+
+    // === Floating image parallax on mouse move ===
+    var showcase = document.getElementById('pdShowcase');
+    var floatImg = document.querySelector('.pd-floating-img img');
+    if (showcase && floatImg) {
+        var mx = 0, my = 0, cx = 0, cy = 0;
+        showcase.addEventListener('mousemove', function(e) {
+            var rect = showcase.getBoundingClientRect();
+            mx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+            my = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+        });
+        showcase.addEventListener('mouseleave', function() { mx = 0; my = 0; });
+
+        function animateFloat() {
+            cx += (mx - cx) * 0.06;
+            cy += (my - cy) * 0.06;
+            floatImg.style.transform = 'translate(' + (cx * 20) + 'px, ' + (cy * 15) + 'px)';
+            requestAnimationFrame(animateFloat);
+        }
+        animateFloat();
+    }
+})();
+</script>
+{% endblock %}

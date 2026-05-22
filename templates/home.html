@@ -1,0 +1,368 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}SmartShop - Shop Smart, Live Better{% endblock %}
+
+{% block content %}
+<section class="hero" id="hero">
+    <div class="hero-gradient-shape"></div>
+    <div class="hero-bg-shapes" id="heroBubbles">
+        <div class="shape shape-1" data-speed="0.03"></div>
+        <div class="shape shape-2" data-speed="0.05"></div>
+        <div class="shape shape-3" data-speed="0.02"></div>
+        <div class="shape shape-4" data-speed="0.04"></div>
+        <div class="shape shape-5" data-speed="0.06"></div>
+        <div class="shape shape-6" data-speed="0.035"></div>
+        <div class="shape shape-7" data-speed="0.025"></div>
+        <div class="shape shape-8" data-speed="0.045"></div>
+        <div class="shape shape-9" data-speed="0.055"></div>
+        <div class="shape shape-10" data-speed="0.03"></div>
+    </div>
+    <div class="hero-content animate-fadeInUp">
+        <h1 class="hero-title">Shop Smart, Live Better</h1>
+        <p class="hero-subtitle">A simple full-stack e-commerce store built using Django, HTML, CSS, and JavaScript.</p>
+        <a href="#products" class="btn btn-hero" id="shopNowBtn"><i class="fas fa-shopping-bag"></i> Shop Now</a>
+    </div>
+</section>
+
+<!-- AI-Powered Features -->
+<section class="features-section" id="ai-features">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">🤖 AI-Powered Features</h2>
+            <p class="section-subtitle">Experience the future of e-commerce — click any card to try it live</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card animate-fadeInUp" style="--card-accent: #6c5ce7; cursor:pointer;" onclick="document.getElementById('chatbotToggle').click();">
+                <div class="feature-icon-wrap">
+                    <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                    <div class="feature-icon-glow"></div>
+                </div>
+                <h3 class="feature-title">AI Shopping Assistant</h3>
+                <p class="feature-desc">Our intelligent chatbot helps you find products, track orders, and get personalized recommendations — all in real-time.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">NLP</span>
+                    <span class="feature-tag">24/7 Support</span>
+                    <span class="feature-tag">Smart Search</span>
+                </div>
+                <div class="feature-status"><span class="status-live"></span> Live & Active</div>
+                <div class="feature-cta"><i class="fas fa-external-link-alt"></i> Try Now</div>
+            </div>
+
+            <div class="feature-card animate-fadeInUp" style="--card-accent: #00cec9; cursor:pointer;" onclick="openFeatureModal('visualSearch')">
+                <div class="feature-icon-wrap">
+                    <div class="feature-icon"><i class="fas fa-camera"></i></div>
+                    <div class="feature-icon-glow"></div>
+                </div>
+                <h3 class="feature-title">Visual Search</h3>
+                <p class="feature-desc">Describe what you're looking for and our AI finds matching products instantly using smart search technology.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">Deep Learning</span>
+                    <span class="feature-tag">Image AI</span>
+                    <span class="feature-tag">CNN</span>
+                </div>
+                <div class="feature-status"><span class="status-live"></span> Live</div>
+                <div class="feature-cta"><i class="fas fa-external-link-alt"></i> Try Now</div>
+            </div>
+
+            <div class="feature-card animate-fadeInUp" style="--card-accent: #fdcb6e; cursor:pointer;" onclick="document.querySelector('.slider-section').scrollIntoView({behavior:'smooth'})">
+                <div class="feature-icon-wrap">
+                    <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                    <div class="feature-icon-glow"></div>
+                </div>
+                <h3 class="feature-title">Recommendation Engine</h3>
+                <p class="feature-desc">Machine learning algorithms analyze your browsing patterns to suggest products you'll love with collaborative filtering.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">ML</span>
+                    <span class="feature-tag">Personalized</span>
+                    <span class="feature-tag">Real-time</span>
+                </div>
+                <div class="feature-status"><span class="status-live"></span> Live & Active</div>
+                <div class="feature-cta"><i class="fas fa-arrow-down"></i> See Recommendations</div>
+            </div>
+
+            <div class="feature-card animate-fadeInUp" style="--card-accent: #e17055; cursor:pointer;" onclick="openFeatureModal('fraud')">
+                <div class="feature-icon-wrap">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="feature-icon-glow"></div>
+                </div>
+                <h3 class="feature-title">Fraud Detection</h3>
+                <p class="feature-desc">Advanced anomaly detection algorithms monitor transactions in real-time, flagging suspicious activity before it impacts you.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">Anomaly Detection</span>
+                    <span class="feature-tag">Real-time</span>
+                    <span class="feature-tag">Secure</span>
+                </div>
+                <div class="feature-status"><span class="status-live"></span> Active Protection</div>
+                <div class="feature-cta"><i class="fas fa-external-link-alt"></i> View Live</div>
+            </div>
+
+            <div class="feature-card animate-fadeInUp" style="--card-accent: #0984e3; cursor:pointer;" onclick="openFeatureModal('analytics')">
+                <div class="feature-icon-wrap">
+                    <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="feature-icon-glow"></div>
+                </div>
+                <h3 class="feature-title">Analytics Dashboard</h3>
+                <p class="feature-desc">Comprehensive insights powered by AI — track sales trends, customer behavior, and inventory forecasting with predictive models.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">Predictive</span>
+                    <span class="feature-tag">Insights</span>
+                    <span class="feature-tag">Big Data</span>
+                </div>
+                <div class="feature-status"><span class="status-live"></span> Live</div>
+                <div class="feature-cta"><i class="fas fa-external-link-alt"></i> Open Dashboard</div>
+            </div>
+
+            <div class="feature-card animate-fadeInUp" style="--card-accent: #e84393; cursor:pointer;" onclick="openFeatureModal('security')">
+                <div class="feature-icon-wrap">
+                    <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
+                    <div class="feature-icon-glow"></div>
+                </div>
+                <h3 class="feature-title">Cybersecurity Monitoring</h3>
+                <p class="feature-desc">AI-driven threat detection continuously scans for vulnerabilities, DDoS attacks, and data breaches to keep your data safe.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">Threat Intel</span>
+                    <span class="feature-tag">Zero Trust</span>
+                    <span class="feature-tag">Encrypted</span>
+                </div>
+                <div class="feature-status"><span class="status-live"></span> Always Monitoring</div>
+                <div class="feature-cta"><i class="fas fa-external-link-alt"></i> View Status</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FEATURE MODALS ===== -->
+<div class="feature-modal-overlay" id="featureModalOverlay" onclick="closeFeatureModal()">
+    <div class="feature-modal" onclick="event.stopPropagation()">
+        <button class="feature-modal-close" onclick="closeFeatureModal()"><i class="fas fa-times"></i></button>
+        <div class="feature-modal-body" id="featureModalBody"></div>
+    </div>
+</div>
+
+<!-- Trending Products Slider -->
+{% if trending %}
+<section class="slider-section">
+    <div class="container">
+        <div class="section-header"><h2 class="section-title">🔥 Trending Products</h2><p class="section-subtitle">Most popular items this week</p></div>
+        <div class="product-slider">
+            {% for product in trending %}
+            <div class="slider-card">
+                <a href="{% url 'product_detail' product.pk %}">
+                    {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+                    {% else %}<div class="product-placeholder small"><i class="fas fa-image"></i></div>{% endif %}
+                </a>
+                <div class="slider-card-info">
+                    <h4>{{ product.name|truncatewords:4 }}</h4>
+                    <span class="slider-price">₹{{ product.price }}</span>
+                    {% if product.avg_rating > 0 %}<span class="mini-stars">⭐ {{ product.avg_rating }}</span>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Recommended For You -->
+{% if recommended %}
+<section class="slider-section">
+    <div class="container">
+        <div class="section-header"><h2 class="section-title">✨ Recommended For You</h2><p class="section-subtitle">Handpicked based on your interests</p></div>
+        <div class="product-slider">
+            {% for product in recommended %}
+            <div class="slider-card">
+                <a href="{% url 'product_detail' product.pk %}">
+                    {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+                    {% else %}<div class="product-placeholder small"><i class="fas fa-image"></i></div>{% endif %}
+                </a>
+                <div class="slider-card-info">
+                    <h4>{{ product.name|truncatewords:4 }}</h4>
+                    <span class="slider-price">₹{{ product.price }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Search & Filter -->
+<section class="filter-section" id="products">
+    <div class="container">
+        <div class="section-header"><h2 class="section-title">Our Products</h2><p class="section-subtitle">Discover our curated collection of premium products</p></div>
+        <div class="filter-bar">
+            <form method="GET" action="{% url 'home' %}" class="search-form">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" name="q" value="{{ query }}" placeholder="Search products..." class="search-input" id="searchInput">
+                    <button type="submit" class="search-btn">Search</button>
+                </div>
+            </form>
+            <div class="category-filters">
+                <a href="{% url 'home' %}#products" class="category-chip {% if not selected_category %}active{% endif %}">All</a>
+                {% for value, label in categories %}
+                <a href="{% url 'home' %}?category={{ value }}#products" class="category-chip {% if selected_category == value %}active{% endif %}">{{ label }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Product Grid -->
+<section class="products-section">
+    <div class="container">
+        {% if products %}
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card animate-fadeInUp" id="product-{{ product.id }}">
+                <div class="product-card-image">
+                    {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+                    {% else %}<div class="product-placeholder"><i class="fas fa-image"></i></div>{% endif %}
+                    {% if product.stock <= 0 %}<span class="badge badge-danger">Out of Stock</span>
+                    {% elif product.stock <= 5 %}<span class="badge badge-warning">Only {{ product.stock }} left</span>{% endif %}
+                    <span class="badge badge-category">{{ product.get_category_display }}</span>
+                </div>
+                <div class="product-card-body">
+                    <h3 class="product-card-title">{{ product.name }}</h3>
+                    <p class="product-card-desc">{{ product.description|truncatewords:15 }}</p>
+                    {% if product.avg_rating > 0 %}
+                    <div class="product-card-rating">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= product.avg_rating %}<i class="fas fa-star star-filled"></i>
+                            {% else %}<i class="far fa-star star-empty"></i>{% endif %}
+                        {% endfor %}
+                        <span class="rating-count">({{ product.review_count }})</span>
+                    </div>
+                    {% endif %}
+                    <div class="product-card-price">₹{{ product.price }}</div>
+                    <div class="product-card-actions">
+                        <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline btn-sm"><i class="fas fa-eye"></i> View Details</a>
+                        {% if product.stock > 0 %}
+                        <a href="{% url 'add_to_cart' product.pk %}" class="btn btn-primary btn-sm add-to-cart-btn"><i class="fas fa-cart-plus"></i> Add to Cart</a>
+                        {% else %}
+                        <button class="btn btn-disabled btn-sm" disabled><i class="fas fa-ban"></i> Unavailable</button>
+                        {% endif %}
+                        <button class="btn btn-compare btn-sm" onclick="addToCompare({{ product.pk }}, '{{ product.name|escapejs }}', '{% if product.image %}{{ product.image.url }}{% endif %}', '{{ product.price }}')" title="Compare">
+                            <i class="fas fa-exchange-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-search empty-state-icon"></i>
+            <h3>No products found</h3>
+            <p>Try a different search term or browse all categories.</p>
+            <a href="{% url 'home' %}" class="btn btn-primary">View All Products</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openFeatureModal(type) {
+    var overlay = document.getElementById('featureModalOverlay');
+    var body = document.getElementById('featureModalBody');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    if (type === 'visualSearch') {
+        body.innerHTML = '<div class="fm-header" style="--accent:#00cec9"><div class="fm-icon"><i class="fas fa-camera"></i></div><h2>Visual Search</h2><p>Describe what you\'re looking for — our AI finds it</p></div>' +
+            '<div class="fm-search-box"><input type="text" id="vsInput" class="form-control" placeholder="e.g. wireless earbuds, laptop backpack, running shoes..." autofocus>' +
+            '<button class="btn btn-primary" onclick="doVisualSearch()" style="margin-top:12px;width:100%"><i class="fas fa-search"></i> Search with AI</button></div>' +
+            '<div id="vsResults" class="fm-results"></div>';
+        setTimeout(function(){ document.getElementById('vsInput').focus(); }, 300);
+        document.getElementById('vsInput').addEventListener('keypress', function(e){ if(e.key==='Enter') doVisualSearch(); });
+    }
+    else if (type === 'analytics') {
+        body.innerHTML = '<div class="fm-header" style="--accent:#0984e3"><div class="fm-icon"><i class="fas fa-chart-line"></i></div><h2>Analytics Dashboard</h2><p>Live store performance metrics</p></div>' +
+            '<div class="fm-loading"><div class="fm-spinner"></div> Loading live data...</div>';
+        fetch('/api/dashboard-stats/').then(r=>r.json()).then(function(d) {
+            body.innerHTML = '<div class="fm-header" style="--accent:#0984e3"><div class="fm-icon"><i class="fas fa-chart-line"></i></div><h2>Analytics Dashboard</h2><p>Live store performance metrics</p></div>' +
+                '<div class="fm-stats-grid">' +
+                '<div class="fm-stat"><div class="fm-stat-val" style="color:#6c5ce7">' + d.products + '</div><div class="fm-stat-label">Products</div></div>' +
+                '<div class="fm-stat"><div class="fm-stat-val" style="color:#00cec9">' + d.orders + '</div><div class="fm-stat-label">Orders</div></div>' +
+                '<div class="fm-stat"><div class="fm-stat-val" style="color:#00b894">₹' + d.revenue.toLocaleString() + '</div><div class="fm-stat-label">Revenue</div></div>' +
+                '<div class="fm-stat"><div class="fm-stat-val" style="color:#fdcb6e">' + d.users + '</div><div class="fm-stat-label">Users</div></div>' +
+                '</div>' +
+                '<h3 style="margin:20px 0 12px;color:var(--text)"><i class="fas fa-layer-group"></i> Category Distribution</h3>' +
+                '<div class="fm-categories">' + Object.entries(d.categories).map(function(c){ return '<div class="fm-cat-row"><span>' + c[0] + '</span><div class="fm-cat-bar-bg"><div class="fm-cat-bar" style="width:' + Math.max(5, (c[1]/d.products)*100) + '%"></div></div><span class="fm-cat-count">' + c[1] + '</span></div>'; }).join('') + '</div>' +
+                '<h3 style="margin:20px 0 12px;color:var(--text)"><i class="fas fa-clock"></i> Recent Orders</h3>' +
+                '<div class="fm-orders-table"><table><thead><tr><th>ID</th><th>User</th><th>Amount</th><th>Payment</th><th>Status</th></tr></thead><tbody>' +
+                d.recent_orders.map(function(o){ return '<tr><td>#' + o.id + '</td><td>' + o.user + '</td><td>₹' + o.total.toLocaleString() + '</td><td><span class="fm-badge">' + o.payment + '</span></td><td><span class="fm-badge fm-badge-' + o.status.toLowerCase() + '">' + o.status + '</span></td></tr>'; }).join('') +
+                '</tbody></table></div>';
+        });
+    }
+    else if (type === 'fraud') {
+        body.innerHTML = '<div class="fm-header" style="--accent:#e17055"><div class="fm-icon"><i class="fas fa-shield-alt"></i></div><h2>Fraud Detection</h2><p>Real-time transaction monitoring</p></div>' +
+            '<div class="fm-loading"><div class="fm-spinner"></div> Scanning transactions...</div>';
+        fetch('/api/dashboard-stats/').then(r=>r.json()).then(function(d) {
+            var f = d.fraud;
+            body.innerHTML = '<div class="fm-header" style="--accent:#e17055"><div class="fm-icon"><i class="fas fa-shield-alt"></i></div><h2>Fraud Detection</h2><p>Real-time transaction monitoring</p></div>' +
+                '<div class="fm-fraud-score"><div class="fm-score-circle"><span class="fm-score-num">' + f.score + '%</span><span class="fm-score-label">Safety Score</span></div></div>' +
+                '<div class="fm-stats-grid">' +
+                '<div class="fm-stat"><div class="fm-stat-val" style="color:#00b894">' + f.transactions_scanned + '</div><div class="fm-stat-label">Scanned</div></div>' +
+                '<div class="fm-stat"><div class="fm-stat-val" style="color:#fdcb6e">' + f.flagged + '</div><div class="fm-stat-label">Flagged</div></div>' +
+                '<div class="fm-stat"><div class="fm-stat-val" style="color:#e17055">' + f.blocked + '</div><div class="fm-stat-label">Blocked</div></div>' +
+                '<div class="fm-stat"><div class="fm-stat-val" style="color:#00cec9">Active</div><div class="fm-stat-label">AI Status</div></div>' +
+                '</div>' +
+                '<div class="fm-secure-msg"><i class="fas fa-check-circle"></i> All transactions are being monitored in real-time. No suspicious activity detected.</div>';
+        });
+    }
+    else if (type === 'security') {
+        body.innerHTML = '<div class="fm-header" style="--accent:#e84393"><div class="fm-icon"><i class="fas fa-user-shield"></i></div><h2>Cybersecurity Monitor</h2><p>Live threat detection & prevention</p></div>' +
+            '<div class="fm-loading"><div class="fm-spinner"></div> Scanning for threats...</div>';
+        fetch('/api/dashboard-stats/').then(r=>r.json()).then(function(d) {
+            var totalBlocked = d.security.reduce(function(a,b){ return a + b.blocked; }, 0);
+            body.innerHTML = '<div class="fm-header" style="--accent:#e84393"><div class="fm-icon"><i class="fas fa-user-shield"></i></div><h2>Cybersecurity Monitor</h2><p>Live threat detection & prevention</p></div>' +
+                '<div class="fm-stats-grid">' +
+                '<div class="fm-stat"><div class="fm-stat-val" style="color:#00b894">' + totalBlocked + '</div><div class="fm-stat-label">Threats Blocked</div></div>' +
+                '<div class="fm-stat"><div class="fm-stat-val" style="color:#6c5ce7">256-bit</div><div class="fm-stat-label">Encryption</div></div>' +
+                '<div class="fm-stat"><div class="fm-stat-val" style="color:#00cec9">Active</div><div class="fm-stat-label">Firewall</div></div>' +
+                '<div class="fm-stat"><div class="fm-stat-val" style="color:#fdcb6e">99.9%</div><div class="fm-stat-label">Uptime</div></div>' +
+                '</div>' +
+                '<h3 style="margin:20px 0 12px;color:var(--text)"><i class="fas fa-exclamation-triangle"></i> Threat Log</h3>' +
+                '<div class="fm-orders-table"><table><thead><tr><th>Threat</th><th>Blocked</th><th>Severity</th><th>Status</th></tr></thead><tbody>' +
+                d.security.map(function(s) {
+                    var sevColor = s.severity==='Critical'?'#e17055':s.severity==='High'?'#fdcb6e':s.severity==='Medium'?'#0984e3':'#00b894';
+                    return '<tr><td><i class="fas fa-bug" style="color:' + sevColor + ';margin-right:6px"></i>' + s.type + '</td><td>' + s.blocked + '</td><td><span class="fm-badge" style="background:' + sevColor + '22;color:' + sevColor + '">' + s.severity + '</span></td><td><span class="fm-badge" style="background:#00b89422;color:#00b894">✓ ' + s.status + '</span></td></tr>';
+                }).join('') +
+                '</tbody></table></div>' +
+                '<div class="fm-secure-msg"><i class="fas fa-shield-alt"></i> All systems operational. Zero Trust architecture active. SSL/TLS certificates valid.</div>';
+        });
+    }
+}
+
+function closeFeatureModal() {
+    document.getElementById('featureModalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function doVisualSearch() {
+    var q = document.getElementById('vsInput').value.trim();
+    if (!q) return;
+    var res = document.getElementById('vsResults');
+    res.innerHTML = '<div class="fm-loading"><div class="fm-spinner"></div> AI is searching...</div>';
+    fetch('/api/visual-search/?q=' + encodeURIComponent(q)).then(r=>r.json()).then(function(d) {
+        if (d.results.length === 0) {
+            res.innerHTML = '<div class="fm-empty"><i class="fas fa-search"></i><p>No matches found. Try different keywords.</p></div>';
+            return;
+        }
+        res.innerHTML = '<p style="color:var(--text-light);margin-bottom:12px"><i class="fas fa-check-circle" style="color:#00b894"></i> Found <strong>' + d.count + '</strong> matches</p>' +
+            '<div class="fm-product-grid">' + d.results.map(function(p) {
+                return '<a href="/product/' + p.id + '/" class="fm-product-card">' +
+                    (p.image ? '<img src="' + p.image + '" alt="' + p.name + '">' : '<div class="fm-no-img"><i class="fas fa-image"></i></div>') +
+                    '<div class="fm-product-info"><h4>' + p.name + '</h4><span class="fm-product-price">₹' + p.price.toLocaleString() + '</span>' +
+                    (p.rating > 0 ? '<span class="fm-product-rating">⭐ ' + p.rating + '</span>' : '') +
+                    '</div></a>';
+            }).join('') + '</div>';
+    });
+}
+
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeFeatureModal(); });
+</script>
+{% endblock %}

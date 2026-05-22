@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Track Order #{{ order.id }} - SmartShop{% endblock %}
+
+{% block content %}
+<section class="tracking-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">📦 Order Tracking</h2>
+            <p class="section-subtitle">Order #{{ order.id }}</p>
+        </div>
+
+        <div class="tracking-card">
+            <div class="tracking-header">
+                <div><h3>Order #{{ order.id }}</h3><p>Placed on {{ order.created_at|date:"d M Y, h:i A" }}</p></div>
+                <div class="tracking-amount">₹{{ order.total_amount }}</div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="tracking-progress-bar">
+                <div class="progress-fill" style="width: {{ progress }}%"></div>
+            </div>
+
+            <!-- Tracking Timeline -->
+            <div class="tracking-timeline">
+                {% for stage in tracking_stages %}
+                <div class="timeline-step {% if stage.completed %}completed{% endif %} {% if stage.current %}current{% endif %}">
+                    <div class="timeline-icon"><i class="{{ stage.icon }}"></i></div>
+                    <div class="timeline-label">{{ stage.label }}</div>
+                    <div class="timeline-status">{{ stage.status }}</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Order Details -->
+            <div class="tracking-details">
+                <div class="tracking-detail-row">
+                    <div class="td-group">
+                        <span class="td-label">Payment Method</span>
+                        <span class="td-value">{{ order.get_payment_method_display }}</span>
+                    </div>
+                    <div class="td-group">
+                        <span class="td-label">Payment Status</span>
+                        <span class="td-value status-badge status-{{ order.payment_status|lower }}">{{ order.payment_status }}</span>
+                    </div>
+                    <div class="td-group">
+                        <span class="td-label">Transaction ID</span>
+                        <span class="td-value">{{ order.transaction_id|default:"-" }}</span>
+                    </div>
+                    <div class="td-group">
+                        <span class="td-label">Delivery Address</span>
+                        <span class="td-value">{{ order.address }}, {{ order.city }}, {{ order.state }} - {{ order.pincode }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="tracking-items">
+                <h4>Order Items</h4>
+                {% for item in order.items.all %}
+                <div class="tracking-item">
+                    {% if item.product.image %}<img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                    {% else %}<div class="product-placeholder mini"><i class="fas fa-image"></i></div>{% endif %}
+                    <div class="tracking-item-info">
+                        <span class="item-name">{{ item.product.name }}</span>
+                        <span class="item-qty">Qty: {{ item.quantity }} × ₹{{ item.price }}</span>
+                    </div>
+                    <div class="tracking-item-subtotal">₹{{ item.subtotal }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <a href="{% url 'my_orders' %}" class="btn btn-outline" style="margin-top:20px"><i class="fas fa-arrow-left"></i> Back to Orders</a>
+    </div>
+</section>
+{% endblock %}

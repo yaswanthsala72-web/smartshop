@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SmartShop - Shop Smart, Live Better. A modern e-commerce store built with Django.">
+    <title>{% block title %}SmartShop{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Dosis:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Page Transition Overlay -->
+    <div class="page-transition-overlay" id="pageTransition">
+        <div class="curtain"></div>
+        <div class="curtain-2"></div>
+        <div class="transition-progress"></div>
+        <span class="transition-logo"><i class="fas fa-bolt"></i> SmartShop</span>
+    </div>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="nav-logo"><i class="fas fa-bolt"></i> SmartShop</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span class="hamburger"></span></button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="{% url 'home' %}" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="{% url 'home' %}#products" class="nav-link"><i class="fas fa-store"></i> Products</a></li>
+                <li>
+                    <a href="{% url 'cart' %}" class="nav-link cart-link">
+                        <i class="fas fa-shopping-cart"></i> Cart
+                        {% if cart_count and cart_count > 0 %}<span class="cart-badge">{{ cart_count }}</span>{% endif %}
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'compare' %}" class="nav-link compare-link" id="navCompareLink">
+                        <i class="fas fa-exchange-alt"></i> Compare
+                        <span class="compare-badge" id="compareBadge" style="display:none;">0</span>
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'my_orders' %}" class="nav-link"><i class="fas fa-box"></i> My Orders</a></li>
+                    <li><a href="{% url 'logout' %}" class="nav-link nav-btn logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    <li class="user-greeting"><i class="fas fa-user-circle"></i> {{ user.username }}</li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="nav-link nav-btn login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    <li><a href="{% url 'register' %}" class="nav-link nav-btn register-btn"><i class="fas fa-user-plus"></i> Register</a></li>
+                {% endif %}
+                <li>
+                    <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="messages-container" id="toastContainer">
+        {% for message in messages %}
+        <div class="toast toast-{{ message.tags }}" id="toast-{{ forloop.counter }}">
+            <span class="toast-text">
+                {% if message.tags == 'success' %}<i class="fas fa-check-circle"></i>
+                {% elif message.tags == 'danger' %}<i class="fas fa-exclamation-circle"></i>
+                {% elif message.tags == 'warning' %}<i class="fas fa-exclamation-triangle"></i>
+                {% elif message.tags == 'info' %}<i class="fas fa-info-circle"></i>
+                {% endif %}
+                {{ message }}
+            </span>
+            <button class="toast-close" onclick="this.parentElement.remove();">&times;</button>
+            <div class="toast-progress"></div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="main-content page-enter">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3 class="footer-title"><i class="fas fa-bolt"></i> SmartShop</h3>
+                    <p class="footer-desc">SmartShop is a modern e-commerce platform built using Django, HTML, CSS, and JavaScript. Shop smart, live better.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="{% url 'home' %}#products"><i class="fas fa-chevron-right"></i> Products</a></li>
+                        <li><a href="{% url 'cart' %}"><i class="fas fa-chevron-right"></i> Cart</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'my_orders' %}"><i class="fas fa-chevron-right"></i> My Orders</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3 class="footer-title">Contact Us</h3>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-map-marker-alt"></i> Hyderabad, Telangana, India</li>
+                        <li><i class="fas fa-phone"></i> +91 98765 43210</li>
+                        <li><i class="fas fa-envelope"></i> support@smartshop.com</li>
+                        <li><i class="fas fa-clock"></i> Mon - Sat: 9:00 AM - 9:00 PM</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SmartShop. All rights reserved. | Built with <i class="fas fa-heart" style="color: #ef4444;"></i> using Django</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AI Chatbot Widget -->
+    <div class="chatbot-toggle" id="chatbotToggle" title="Chat with SmartBot">
+        <i class="fas fa-robot"></i>
+        <span class="chatbot-pulse"></span>
+    </div>
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+            <div class="chatbot-header-info">
+                <div class="chatbot-avatar"><i class="fas fa-robot"></i></div>
+                <div>
+                    <h4 class="chatbot-name">SmartBot</h4>
+                    <span class="chatbot-status"><span class="status-dot"></span> Online</span>
+                </div>
+            </div>
+            <button class="chatbot-close" id="chatbotClose"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chat-msg bot">
+                <div class="chat-bubble">Hello! 👋 I'm <strong>SmartBot</strong>. I can help with 🔍 product search, 💰 budget finds, 📦 order tracking, and ❓ FAQs. Ask me anything!</div>
+            </div>
+        </div>
+        <div class="chatbot-input-area">
+            <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Ask me anything..." autocomplete="off">
+            <button class="chatbot-send" id="chatbotSend"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Floating Compare Bar -->
+    <div class="compare-float-bar" id="compareFloatBar" style="display:none;">
+        <div class="compare-float-inner">
+            <div class="compare-float-items" id="compareFloatItems"></div>
+            <div class="compare-float-actions">
+                <span class="compare-float-count" id="compareFloatCount">0 products</span>
+                <a href="{% url 'compare' %}" class="compare-float-btn" id="compareFloatBtn">
+                    <i class="fas fa-exchange-alt"></i> Compare Now
+                </a>
+                <button class="compare-float-clear" id="compareFloatClear" title="Clear all">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="compare-toast" id="compareToast">
+        <i class="fas fa-check-circle"></i>
+        <span id="compareToastMsg">Product added for comparison</span>
+    </div>
+
+    <script src="{% static 'js/script.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

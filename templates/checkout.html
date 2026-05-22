@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - SmartShop{% endblock %}
+
+{% block content %}
+<section class="checkout-section">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-credit-card"></i> Checkout</h1>
+            <p class="page-subtitle">Complete your order with shipping and payment details</p>
+        </div>
+
+        <div class="checkout-layout">
+            <div class="checkout-form-container">
+                <form method="POST" action="{% url 'place_order' %}" class="checkout-form" id="checkoutForm">
+                    {% csrf_token %}
+                    <div class="form-section">
+                        <h3 class="form-section-title"><i class="fas fa-user"></i> Personal Details</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="checkout-fullname">Full Name *</label>
+                                {{ form.full_name }}
+                            </div>
+                            <div class="form-group">
+                                <label for="checkout-mobile">Mobile Number *</label>
+                                {{ form.mobile }}
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="checkout-email">Email Address *</label>
+                                {{ form.email }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h3 class="form-section-title"><i class="fas fa-map-marker-alt"></i> Shipping Address</h3>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="checkout-address">Address *</label>
+                                {{ form.address }}
+                            </div>
+                            <div class="form-group">
+                                <label for="checkout-city">City *</label>
+                                {{ form.city }}
+                            </div>
+                            <div class="form-group">
+                                <label for="checkout-state">State *</label>
+                                {{ form.state }}
+                            </div>
+                            <div class="form-group">
+                                <label for="checkout-pincode">Pincode *</label>
+                                {{ form.pincode }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method Selection -->
+                    <div class="form-section">
+                        <h3 class="form-section-title"><i class="fas fa-wallet"></i> Payment Method</h3>
+
+                        <div class="payment-methods-grid">
+                            <label class="payment-method-card" id="pm-COD">
+                                <input type="radio" name="payment_method" value="COD" checked>
+                                <div class="pm-card-inner">
+                                    <div class="pm-icon cod-icon"><i class="fas fa-money-bill-wave"></i></div>
+                                    <div class="pm-label">Cash on Delivery</div>
+                                    <div class="pm-check"><i class="fas fa-check-circle"></i></div>
+                                </div>
+                            </label>
+                            <label class="payment-method-card" id="pm-UPI">
+                                <input type="radio" name="payment_method" value="UPI">
+                                <div class="pm-card-inner">
+                                    <div class="pm-icon upi-icon"><i class="fas fa-mobile-alt"></i></div>
+                                    <div class="pm-label">UPI</div>
+                                    <div class="pm-check"><i class="fas fa-check-circle"></i></div>
+                                </div>
+                            </label>
+                            <label class="payment-method-card" id="pm-Card">
+                                <input type="radio" name="payment_method" value="Card">
+                                <div class="pm-card-inner">
+                                    <div class="pm-icon card-icon"><i class="fas fa-credit-card"></i></div>
+                                    <div class="pm-label">Debit/Credit Card</div>
+                                    <div class="pm-check"><i class="fas fa-check-circle"></i></div>
+                                </div>
+                            </label>
+                            <label class="payment-method-card" id="pm-Razorpay">
+                                <input type="radio" name="payment_method" value="Razorpay">
+                                <div class="pm-card-inner">
+                                    <div class="pm-icon razorpay-icon"><i class="fas fa-bolt"></i></div>
+                                    <div class="pm-label">Razorpay</div>
+                                    <div class="pm-check"><i class="fas fa-check-circle"></i></div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- COD Details -->
+                        <div class="payment-detail-panel" id="panel-COD" style="display:block;">
+                            <div class="payment-panel-inner">
+                                <div class="cod-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <div>
+                                        <strong>Pay when you receive your order</strong>
+                                        <p>Our delivery partner will collect the payment at your doorstep. Please keep exact change ready.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UPI Details -->
+                        <div class="payment-detail-panel" id="panel-UPI" style="display:none;">
+                            <div class="payment-panel-inner">
+                                <div class="upi-apps">
+                                    <span class="upi-app-badge"><i class="fas fa-mobile-alt"></i> Google Pay</span>
+                                    <span class="upi-app-badge"><i class="fas fa-mobile-alt"></i> PhonePe</span>
+                                    <span class="upi-app-badge"><i class="fas fa-mobile-alt"></i> Paytm</span>
+                                    <span class="upi-app-badge"><i class="fas fa-mobile-alt"></i> BHIM</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="upi-id"><i class="fas fa-at"></i> Enter UPI ID *</label>
+                                    <input type="text" id="upi-id" name="upi_id" class="form-control" placeholder="yourname@upi" autocomplete="off">
+                                    <small class="form-hint">Example: name@oksbi, name@ybl, name@paytm</small>
+                                </div>
+                                <div class="payment-secure-badge">
+                                    <i class="fas fa-shield-alt"></i> UPI payments are processed securely via NPCI
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Details -->
+                        <div class="payment-detail-panel" id="panel-Card" style="display:none;">
+                            <div class="payment-panel-inner">
+                                <div class="card-brands">
+                                    <span class="card-brand-badge"><i class="fab fa-cc-visa"></i></span>
+                                    <span class="card-brand-badge"><i class="fab fa-cc-mastercard"></i></span>
+                                    <span class="card-brand-badge"><i class="fab fa-cc-amex"></i></span>
+                                    <span class="card-brand-badge"><i class="fas fa-credit-card"></i> RuPay</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="card-number"><i class="fas fa-credit-card"></i> Card Number *</label>
+                                    <input type="text" id="card-number" name="card_number" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="off">
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="card-name"><i class="fas fa-user"></i> Name on Card *</label>
+                                        <input type="text" id="card-name" name="card_name" class="form-control" placeholder="John Doe" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="card-expiry"><i class="fas fa-calendar-alt"></i> Expiry *</label>
+                                        <input type="text" id="card-expiry" name="card_expiry" class="form-control" placeholder="MM/YY" maxlength="5" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="card-cvv"><i class="fas fa-lock"></i> CVV *</label>
+                                        <input type="password" id="card-cvv" name="card_cvv" class="form-control" placeholder="•••" maxlength="4" autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="payment-secure-badge">
+                                    <i class="fas fa-lock"></i> Your card details are encrypted with 256-bit SSL
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Razorpay Details -->
+                        <div class="payment-detail-panel" id="panel-Razorpay" style="display:none;">
+                            <div class="payment-panel-inner">
+                                <div class="razorpay-banner">
+                                    <div class="razorpay-logo">
+                                        <i class="fas fa-bolt"></i> <strong>Razorpay</strong>
+                                    </div>
+                                    <p>You'll be redirected to Razorpay's secure payment gateway to complete your transaction.</p>
+                                    <div class="razorpay-methods">
+                                        <span><i class="fas fa-credit-card"></i> Cards</span>
+                                        <span><i class="fas fa-mobile-alt"></i> UPI</span>
+                                        <span><i class="fas fa-university"></i> Net Banking</span>
+                                        <span><i class="fas fa-wallet"></i> Wallets</span>
+                                    </div>
+                                </div>
+                                <div class="payment-secure-badge">
+                                    <i class="fas fa-shield-alt"></i> Secured by Razorpay — PCI DSS Compliant
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment-info">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Your payment information is secure and encrypted.</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" id="placeOrderBtn">
+                        <i class="fas fa-check-circle"></i> <span id="placeOrderText">Place Order — ₹{{ total }}</span>
+                    </button>
+                </form>
+            </div>
+            <div class="checkout-summary">
+                <div class="cart-summary-card">
+                    <h3 class="summary-title">Order Summary</h3>
+                    <div class="checkout-items">
+                        {% for item in cart_items %}
+                        <div class="checkout-item">
+                            <div class="checkout-item-info">
+                                <span class="checkout-item-name">{{ item.product.name }}</span>
+                                <span class="checkout-item-qty">Qty: {{ item.quantity }}</span>
+                            </div>
+                            <div class="checkout-item-price">₹{{ item.subtotal }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span>₹{{ total }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    // Payment method switching
+    var radios = document.querySelectorAll('input[name="payment_method"]');
+    var panels = document.querySelectorAll('.payment-detail-panel');
+    var orderText = document.getElementById('placeOrderText');
+    var total = '₹{{ total }}';
+
+    function showPanel(val) {
+        panels.forEach(function(p) { p.style.display = 'none'; });
+        var panel = document.getElementById('panel-' + val);
+        if (panel) { panel.style.display = 'block'; }
+
+        // Update button text
+        if (val === 'COD') orderText.innerHTML = 'Place Order — ' + total;
+        else if (val === 'UPI') orderText.innerHTML = '<i class="fas fa-mobile-alt"></i> Pay via UPI — ' + total;
+        else if (val === 'Card') orderText.innerHTML = '<i class="fas fa-credit-card"></i> Pay with Card — ' + total;
+        else if (val === 'Razorpay') orderText.innerHTML = '<i class="fas fa-bolt"></i> Pay with Razorpay — ' + total;
+    }
+
+    radios.forEach(function(r) {
+        r.addEventListener('change', function() { showPanel(this.value); });
+    });
+
+    // Card number formatting (add spaces every 4 digits)
+    var cardNum = document.getElementById('card-number');
+    if (cardNum) {
+        cardNum.addEventListener('input', function() {
+            var v = this.value.replace(/\s/g, '').replace(/\D/g, '');
+            var formatted = v.match(/.{1,4}/g);
+            this.value = formatted ? formatted.join(' ') : '';
+        });
+    }
+
+    // Card expiry formatting (MM/YY)
+    var cardExp = document.getElementById('card-expiry');
+    if (cardExp) {
+        cardExp.addEventListener('input', function() {
+            var v = this.value.replace(/\D/g, '');
+            if (v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2,4);
+            this.value = v;
+        });
+    }
+
+    // Validate ALL fields on submit (shipping + payment)
+    var form = document.getElementById('checkoutForm');
+    form.addEventListener('submit', function(e) {
+        var errors = [];
+
+        // Validate shipping fields
+        var fn = document.getElementById('checkout-fullname');
+        var mob = document.getElementById('checkout-mobile');
+        var em = document.getElementById('checkout-email');
+        var addr = document.getElementById('checkout-address');
+        var city = document.getElementById('checkout-city');
+        var st = document.getElementById('checkout-state');
+        var pin = document.getElementById('checkout-pincode');
+
+        if (fn && fn.value.trim().length < 2) errors.push('Enter your full name.');
+        if (mob && !/^[0-9]{10}$/.test(mob.value.trim())) errors.push('Enter a valid 10-digit mobile number.');
+        if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())) errors.push('Enter a valid email address.');
+        if (addr && addr.value.trim().length < 5) errors.push('Enter your complete address.');
+        if (city && city.value.trim().length < 2) errors.push('Enter your city.');
+        if (st && st.value.trim().length < 2) errors.push('Enter your state.');
+        if (pin && !/^[0-9]{6}$/.test(pin.value.trim())) errors.push('Enter a valid 6-digit pincode.');
+
+        // Validate payment method
+        var selected = document.querySelector('input[name="payment_method"]:checked');
+        if (!selected) {
+            errors.push('Please select a payment method.');
+        } else {
+            var val = selected.value;
+            if (val === 'UPI') {
+                var upiId = document.getElementById('upi-id').value.trim();
+                if (!upiId || !upiId.includes('@')) {
+                    errors.push('Enter a valid UPI ID (e.g. name@upi).');
+                }
+            }
+            if (val === 'Card') {
+                var cn = document.getElementById('card-number').value.replace(/\s/g, '');
+                var cname = document.getElementById('card-name').value.trim();
+                var cexp = document.getElementById('card-expiry').value.trim();
+                var ccvv = document.getElementById('card-cvv').value.trim();
+                if (cn.length < 13 || cn.length > 19) errors.push('Enter a valid card number.');
+                if (cname.length < 2) errors.push('Enter the name on your card.');
+                if (!/^\d{2}\/\d{2}$/.test(cexp)) errors.push('Enter card expiry as MM/YY.');
+                if (ccvv.length < 3) errors.push('Enter a valid CVV.');
+            }
+        }
+
+        if (errors.length > 0) {
+            e.preventDefault();
+            alert(errors.join('\n'));
+        }
+    });
+})();
+</script>
+{% endblock %}

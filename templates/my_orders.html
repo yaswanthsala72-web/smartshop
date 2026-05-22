@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}My Orders - SmartShop{% endblock %}
+
+{% block content %}
+<section class="orders-section">
+    <div class="container">
+        <div class="section-header"><h2 class="section-title">📦 My Orders</h2><p class="section-subtitle">Track and manage your orders</p></div>
+
+        {% if orders %}
+        <div class="orders-list">
+            {% for order in orders %}
+            <div class="order-card">
+                <div class="order-card-header">
+                    <div class="order-info-group">
+                        <span class="order-id">Order #{{ order.id }}</span>
+                        <span class="order-date">{{ order.created_at|date:"d M Y, h:i A" }}</span>
+                    </div>
+                    <div class="order-status-group">
+                        <span class="status-badge status-{{ order.status|lower|slugify }}">{{ order.status }}</span>
+                    </div>
+                </div>
+
+                <div class="order-items-preview">
+                    {% for item in order.items.all %}
+                    <div class="order-item-mini">
+                        {% if item.product.image %}<img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                        {% else %}<div class="product-placeholder mini"><i class="fas fa-image"></i></div>{% endif %}
+                        <div><span>{{ item.product.name }}</span><small>Qty: {{ item.quantity }} × ₹{{ item.price }}</small></div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="order-card-footer">
+                    <div class="order-meta">
+                        <span><i class="fas fa-credit-card"></i> {{ order.get_payment_method_display }}</span>
+                        <span class="payment-status-mini status-{{ order.payment_status|lower }}"><i class="fas fa-circle"></i> {{ order.payment_status }}</span>
+                        {% if order.transaction_id %}<span class="txn-id"><i class="fas fa-receipt"></i> {{ order.transaction_id }}</span>{% endif %}
+                    </div>
+                    <div class="order-total-actions">
+                        <span class="order-total">₹{{ order.total_amount }}</span>
+                        <a href="{% url 'order_tracking' order.id %}" class="btn btn-primary btn-sm"><i class="fas fa-truck"></i> Track Order</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-shopping-bag empty-state-icon"></i>
+            <h3>No orders yet</h3>
+            <p>You haven't placed any orders. Start shopping now!</p>
+            <a href="{% url 'home' %}#products" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> Start Shopping</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
